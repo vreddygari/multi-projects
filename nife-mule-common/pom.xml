@@ -19,7 +19,7 @@
 	
 	<profiles>
 		<profile>
-			<id>Dev</id>
+			<id>Sandbox</id>
 			<build>
 				<plugins>
 
