@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="info-log-transformer" doc:id="c82a1b45-48dd-4d0b-8069-f022b6fdad8c" >
+		<ee:transform doc:name="set logging info" doc:id="c9907573-0874-4cec-b0a6-c1ac73d6c927" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="infologger" ><![CDATA[%dw 2.0
+output application/json  skipNullOn="everywhere"
+---
+{
+	"Timestamp": now(),
+	"EventType": "INFO",
+	"Transactionid": vars."x-transaction-id",
+	"APIName": p('app.name'),
+	"Environment": p('mule.env'),
+	"Consumer": vars."consumer",
+	"ProcessName": vars."resource",
+	"Tracepoint": vars."tracepoint",
+	"Elapsedtime": if (vars.tracepoint contains "end") ((now() as Number {unit: "milliseconds"}) - vars."starttime") else null,
+	"Payload": vars."logpayload"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="c99234ad-e6db-4310-99d6-bc2807960da3" name="info-logger-flow"/>
+	</sub-flow>
+	
+	<sub-flow name="exception-log-transformer" doc:id="f6ab4282-df7d-4d4f-84b0-53fcdaf3ac7e" >
+		<ee:transform doc:name="set logging info" doc:id="68ed9d5b-e313-44fc-bc7b-1a793dc89a97" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="errorlogger" ><![CDATA[%dw 2.0
+output application/json  skipNullOn="everywhere"
+---
+{
+	"Timestamp": now(),
+	"EventType": "ERROR",
+	"Transactionid": vars."x-transaction-id",
+	"APIName": p('app.name'),
+	"Environment": p('mule.env'),
+	"Consumer": vars."source",
+	"ProcessName": vars."resource",
+	"Tracepoint": vars."tracepoint",
+	"ErrorCode": vars."errorcode",
+	"ErrorDetails": vars."errormessage",
+	"Payload": vars."logpayload"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="da3b375f-12e7-4442-aad4-12404801e0ce" name="error-logger-flow"/>
+	</sub-flow>
+	
+	<sub-flow name="debug-log-transformer" doc:id="a6f4e71c-561f-4394-8719-c110edbb045d" >
+		<ee:transform doc:name="set logging info" doc:id="e38e48f0-4357-4907-b02c-c8bd406ee2c1" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="debuglogger" ><![CDATA[%dw 2.0
+output application/json  skipNullOn="everywhere"
+---
+{
+	"Timestamp": now(),
+	"EventType": "DEBUG",
+	"Transactionid": vars."x-transaction-id",
+	"APIName": p('app.name'),
+	"Environment": p('mule.env'),
+	"Consumer": vars."source",
+	"ProcessName": vars."resource",
+	"Tracepoint": vars."tracepoint",
+	"Payload": vars."debugpayload"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="299954a8-bee9-440e-a8e7-70c5057bb7c6" name="debug-logger-flow"/>
+	</sub-flow>
+	
+	<sub-flow name="info-logger-flow" doc:id="f4dfe5c5-473f-4bf1-86c6-725f3122966c" >
+		<logger level="INFO" doc:name="INFO-Logger" doc:id="06dd1aee-d9a0-4420-9b6d-200659726aac" message="#[vars.infologger]"/>
+	</sub-flow>
+	<sub-flow name="error-logger-flow" doc:id="5bb8364c-b5dc-4e73-b40f-51a2346631c9" >
+		<logger level="ERROR" doc:name="Error-Logger" doc:id="5ab28984-0e5a-4d6d-a549-f19efa587f01" message="#[vars.errorlogger]"/>
+	</sub-flow>
+	<sub-flow name="debug-logger-flow" doc:id="cd801e70-cab4-418d-9d51-63917278cc7d" >
+		<logger level="DEBUG" doc:name="DEBUG-Logger" doc:id="3a792db0-adc6-4612-8fc4-56254e825888" message="#[vars.debuglogger]" category="level3"/>
+	</sub-flow>
+</mule>

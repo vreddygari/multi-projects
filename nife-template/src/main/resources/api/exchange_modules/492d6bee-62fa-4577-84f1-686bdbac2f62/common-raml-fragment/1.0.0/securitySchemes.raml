@@ -1,0 +1,16 @@
+#%RAML 1.0 Library
+securitySchemes: 
+  clientCredentials:
+    type: x-client-credentials
+    description: Use application client_id and secret assigned by API administrator.
+  basic:
+    type: Basic Authentication 
+    description: Basic Authentication.
+  oauth:
+    type: x-bearerToken       
+    description: Use a valid OAuth bearer token. This security scheme validates requests to the API using a token provided in the request header.
+    describedBy:
+      headers:
+        Authorization:
+          description: This header should contain a valid security token
+          type: string

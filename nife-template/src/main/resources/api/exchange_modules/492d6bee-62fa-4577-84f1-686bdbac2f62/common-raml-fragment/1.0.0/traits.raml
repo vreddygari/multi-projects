@@ -1,0 +1,230 @@
+#%RAML 1.0 Library
+usage: This library defines some basic traits
+
+traits:   
+  pagination:
+    queryParameters:
+      startPage:
+        description: Starting page number, first page is 1
+        type: integer
+        example: 1
+      pageSize:
+        description: Maximum number of entries per page
+        type: integer
+        example: 10
+
+  cultureInfo:
+    queryParameters:
+      cultureCode:
+        description: RFC 4646 based on combination of ISO 639 two-letter language code and an ISO 3166 two-letter country code
+        type: string
+        required: false
+        pattern: ^[a-z]{2,3}(?:-[A-Z]{2,3}(?:-[a-zA-Z]{4})?)?$
+        default: en-US
+        example: en-US
+
+  hasParamAsOfDateNotRequired:
+    queryParameters:
+      asOfDate: 
+        description: The date used to filter the data response
+        required: false
+        type: date-only
+        example: '2018-01-01'
+
+  hasParamAsOfDateRequired:
+    queryParameters:
+      asOfDate: 
+        description: The date used to filter the data response
+        required: true
+        type: date-only
+        example: '2018-01-01'   
+
+  hasParamStartDateNotRequired: 
+    queryParameters:
+      startDate: 
+        description: The starting date of a date range
+        required: false
+        type: date-only
+        example: '2018-01-01'
+
+  hasParamStartDateRequired:
+    queryParameters:
+      startDate: 
+        description: The starting date of a date range
+        required: true
+        type: date-only
+        example: '2018-01-01' 
+
+  hasParamEndDateNotRequired:
+    queryParameters:
+      endDate: 
+        description: The ending date of a date range. Alternatively the as-of-date when used for a single date
+        required: false
+        type: date-only
+        example: '2018-01-02'
+        
+  hasParamEndDateRequired: 
+    queryParameters:
+      endDate: 
+        description: The ending date of a date range. Alternatively the as-of-date when used for a single date
+        required: true
+        type: date-only
+        example: '2018-01-02' 
+
+  contentTypeRequired:
+    headers:
+      content-type:
+        type: string
+        example: application/json
+
+  acceptRequired:
+    headers:
+      accept:
+        type: string
+        example: application/json
+
+  clientCredentialsRequired:
+    headers:
+      Authorization:
+        type: string
+        example: Basic OThmOGQ5ZGM0YzgyNGQ0Zjk0ZjBmODdiYmE2NTNkZDA6NGY2RDhlNUQ0MDQ3NEZERTg0MjkxZEE0M2FhMD=
+        
+      # client_id:
+      #   type: string
+      #   example: 7b404180fbb84b099179a4126a9576ff
+      # client_secret:
+      #   type: string
+      #   example: e241f4aa3eca4b2a8FA67A2FEF5754F8
+
+  transactionIdOptional:
+    headers:
+      x-transaction-id:
+        type: string
+        required: false
+
+  transactionIdRequired:
+    headers:
+      x-transaction-id:
+        type: string
+        required: true
+
+  marketContext:
+    headers: 
+      isa-market:
+        type: string 
+        required: false
+        example: "US"
+
+  requestIdRequired:
+    headers: 
+      requestId:
+        type: string 
+        required: true
+
+  requestIdOptional:
+    headers: 
+      requestId:
+        type: string 
+        required: false
+
+  responseId200:
+    responses: 
+      200:
+        headers:
+          responseId:
+            type: string
+            required: false
+            example: "7626fa2f-90d7-40fa-96f5-faf198f93c88"
+
+  responseId201:
+    responses:       
+      201:
+        headers:
+          responseId:
+            type: string
+            required: false
+
+  responseId204: 
+    responses:      
+      204:
+        headers:
+          responseId:
+            type: string
+            required: false
+            
+  standardErrorResponses:
+      responses:
+        400:
+          description:
+            The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).
+          body:
+            application/json:
+              type: !include dataTypes/ErrorMsg.raml
+        401:
+          description:
+            The supplied credentials are invalid.
+          body:
+            application/json:
+              type: !include dataTypes/ErrorMsg.raml
+        403:
+          description:
+            There is a problem with the credentials that were provided.
+          body:
+            application/json:
+              type: !include dataTypes/ErrorMsg.raml
+        404:
+          description:
+            The server cannot find the requested resource.
+          body:
+            application/json:
+              example: |
+                {  "status": "404", "message": "Resource not found" }
+        405:
+          description:
+            A request was made of a resource using a request method not supported by that resource; for example, using GET on a form which requires data to be presented via POST, or using PUT on a read-only resource.
+          body:
+            application/json: 
+              example: |
+                {  "status": "405", "message": "Method not allowed" }
+        406:
+          description:
+            The target resource does not have a current representation that would be acceptable to the user agent.
+          body:
+            application/json:
+              example: |
+                {  "status": "406", "message": "Not acceptable" }
+        415:
+          description:
+            The accept header specified an unsupported media type.
+          body:
+            application/json: 
+              example: |
+                {  "status": "415", "message": "Unsupported media type" }
+        500:
+          description:
+            An internal processing error occurred while processing the API request.
+          body:
+            application/json:
+              example: |
+                { "status": "500", "message": "Internal Server Error" }
+        597:
+          description:
+            Experience API timeout during dependent service invocation.
+          body:
+            application/json:
+              example: |
+                { "status": "597", "message": "Experience API Dependent Service Timeout" }
+        598:
+          description:
+            Process API timeout during dependent service invocation.
+          body:
+            application/json:
+              example: |
+                { "status": "598", "message": "Process API Dependent Service Timeout" }
+        599:
+          description:
+            System API timeout during dependent service invocation.
+          body:
+            application/json:
+              example: |
+                { "status": "599", "message": "System API Dependent Service Timeout" }

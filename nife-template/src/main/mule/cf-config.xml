@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<global-property doc:name="Global Property" doc:id="61a1c1a2-be5e-4324-88ee-e09c229abd35" name="env" value="dev" />
+	<global-property doc:name="Global Property" doc:id="61456fb2-f3da-4d51-9059-95c6062deaeb" name="key" value="12345" />
+	<configuration-properties doc:name="Configuration properties" doc:id="8b049107-16a7-41ac-b2e8-f8621996c3eb" file="config/${env}.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="0e4b9c8f-8699-436a-8946-dfa6e1cf68ee" file="config/common.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="2399d2c0-3785-4562-aa00-c6599df34d5f" file="config/common.yaml" key="${key}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<secure-properties:config name="Secure_Properties_environment_Config" doc:name="Secure Properties Config" doc:id="31f32591-ed2b-4ef5-86fe-3b9cfef7021d" file="config/${env}.yaml" key="${mule.key}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<import doc:name="Import" doc:id="382240cc-74e4-4150-9ffa-7d5caa1d968e" file="cf-logger.xml" />
+	<import doc:name="Import" doc:id="571aba82-8dba-4b07-8aab-5299cd96e10e" file="cf-exceptions-async-apis.xml" />
+</mule>

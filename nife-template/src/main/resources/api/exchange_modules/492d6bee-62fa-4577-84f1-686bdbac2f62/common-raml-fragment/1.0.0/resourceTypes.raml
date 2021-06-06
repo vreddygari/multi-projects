@@ -1,0 +1,134 @@
+#%RAML 1.0 Library
+usage: This library defines the resource types for the API
+uses:  
+  myTraits: traits.raml
+resourceTypes:
+  collection:
+    usage: Use this resourceType to represent a collection of items
+    description: A collection of <<resourcePathName|!uppercamelcase>>
+    # get:
+    #   description: |
+    #     Get all <<resourcePathName|!uppercamelcase>>,
+    #     optionally filtered
+    #   is: [myTraits.hasResponseCollection]
+    get?:
+      description: Return a list of <<resourcePathName|!singularize|!uppercamelcase>> records
+      displayName: Return a list of <<resourcePathName|!singularize|!uppercamelcase>> records
+      is: 
+        # - myTraits.pagination
+        - myTraits.standardErrorResponses
+        - myTraits.acceptRequired
+      responses: 
+        200: 
+          body:
+            application/json:
+              type: object
+              properties:
+                <<typeName|!lowercamelcase>>ListResponse: <<typeName>>[]
+    post?:
+      description: Add new <<resourcePathName|!singularize|!uppercamelcase>> record
+      displayName: Add new <<resourcePathName|!singularize|!uppercamelcase>> record
+      is:         
+        - myTraits.standardErrorResponses
+        - myTraits.acceptRequired
+        - myTraits.contentTypeRequired
+        - myTraits.transactionIdRequired
+      body:
+        application/json:
+          type: <<typeName>>
+      responses: 
+        201:
+          body:
+            application/json:
+
+    put?:
+      description: Add a collection of <<resourcePathName|!singularize|!uppercamelcase>> records
+      displayName: Add a collection of <<resourcePathName|!singularize|!uppercamelcase>> records
+      is:         
+        - myTraits.standardErrorResponses
+        - myTraits.acceptRequired
+        - myTraits.contentTypeRequired
+        - myTraits.transactionIdRequired
+      body:
+        application/json:
+          type: <<typeName>>[]
+      responses: 
+        201:
+          body:
+            application/json:        
+  writer:
+    post:
+      description: Add new <<resourcePathName|!singularize|!uppercamelcase>> record
+      displayName: Add new <<resourcePathName|!singularize|!uppercamelcase>> record
+      is:         
+        - myTraits.standardErrorResponses
+        - myTraits.acceptRequired
+        - myTraits.contentTypeRequired
+        - myTraits.transactionIdRequired      
+      body:
+        application/json:
+          type: <<typeName>>
+      responses: 
+        201:
+          body:
+            application/json: 
+
+  item:
+    usage: Use this resourceType to represent any single item
+    description: A single <<resourcePathName|!singularize|!uppercamelcase>>
+    get?:
+      description: Get a specific <<resourcePathName|!singularize|!uppercamelcase>>
+      displayName: Get a/an <<resourcePathName|!singularize|!uppercamelcase>> by <<resourcePathName|!singularize|!uppercamelcase>> ID
+      is: 
+        - myTraits.acceptRequired
+        - myTraits.standardErrorResponses
+        - myTraits.transactionIdOptional
+      responses: 
+        200: 
+          body:
+            application/json:
+              type: object
+              properties:
+                <<typeName|!lowercamelcase>>Response: <<typeName>>
+    post?:
+      description: Add new <<resourcePathName|!singularize|!uppercamelcase>> record
+      displayName: Add new <<resourcePathName|!singularize|!uppercamelcase>> record
+      is:         
+        - myTraits.standardErrorResponses
+        - myTraits.acceptRequired
+        - myTraits.contentTypeRequired
+        - myTraits.transactionIdRequired      
+      body:
+        application/json:
+          type: object
+          properties:
+            <<typeName|!lowercamelcase>>Request: <<typeName>>
+      responses: 
+        201:
+          body:
+            application/json: 
+    put?:
+      description: Update a specific <<resourcePathName|!singularize|!uppercamelcase>> 
+      displayName: Update a/an <<resourcePathName|!singularize|!uppercamelcase>> by <<resourcePathName|!singularize|!uppercamelcase>> ID
+      is:
+        - myTraits.acceptRequired
+        - myTraits.standardErrorResponses
+        - myTraits.contentTypeRequired
+        - myTraits.transactionIdOptional
+      body:
+        application/json:
+          type: object
+          properties:
+            <<typeName|!lowercamelcase>>Request: <<typeName>>
+      responses:
+        201:
+          body:
+            application/json:
+    delete?:
+      description: Delete a specific <<resourcePathName|!singularize|!uppercamelcase>>
+      displayName: Delete a/an <<resourcePathName|!singularize|!uppercamelcase>> by <<resourcePathName|!singularize|!uppercamelcase>> ID
+      is:  
+        - myTraits.standardErrorResponses
+        - myTraits.transactionIdOptional
+      responses:
+        204:

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
+	
+	<error-handler name="cf-exceptions-async-apisError_Handler" doc:id="81901f4b-3e52-4240-a328-471655bf626a" >
+		
+		
+		<on-error-continue enableNotifications="true" logException="false" doc:name="On Error Continue" doc:id="18a79499-a348-4f50-b617-b52df98e26ca" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="3db881ef-a869-40a9-8cab-ee936c5e1bb8" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="errormessage" ><![CDATA[%dw 2.0
+output application/java
+---
+error.description]]></ee:set-variable>
+					<ee:set-variable variableName="errorcode" ><![CDATA[%dw 2.0
+output application/json
+---
+'1002']]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<ee:transform doc:name="Transform Message" doc:id="658022cc-ff9e-4a3f-a66c-5588a8758e99" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.actualpayload]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="logpayload" ><![CDATA[%dw 2.0
+output application/json
+---
+{  
+	"status": "message processing failed", 
+	"ErrorCode": vars.errorcode,
+	"message": "Unhandled exception occurred : " ++ vars.errormessage
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Exception-Logger" doc:id="1b78d5a5-a4a0-4eb3-aa6e-f07a29e62626" name="exception-log-transformer"/>
+			<anypoint-mq:publish doc:name="Publish" doc:id="8a3e75d7-da60-493c-a82f-5464ae161884" config-ref="Anypoint_MQ_Config" destination="${amq.destination.error}">
+				<anypoint-mq:properties><![CDATA[#[output application/java
+---
+{
+	errorcode : vars.errorcode,
+	errormessage : vars.errormessage
+}]]]></anypoint-mq:properties>
+			</anypoint-mq:publish>
+		</on-error-continue>
+	</error-handler>
+</mule>

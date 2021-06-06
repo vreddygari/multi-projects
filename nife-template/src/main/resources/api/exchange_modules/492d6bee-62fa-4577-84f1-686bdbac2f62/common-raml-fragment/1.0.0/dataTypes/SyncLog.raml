@@ -1,0 +1,20 @@
+#%RAML 1.0 DataType
+type: object
+displayName: Sync Log Data Type
+description: Used to log data sync activities
+properties:
+  syncDateBegin: 
+    type: datetime
+    description: The "begin" window of the data being sync'd    
+  syncDateEnd:
+    type: datetime    
+    description: The "end" window of the data being sync'd
+  recordsProcessed:
+    type: integer
+    description: The number of records processed
+  transactionID:
+    type: string
+  
+  elapsedTime:
+    type: integer
+    description: The time taken in milliseconds to complete the process. 
