@@ -31,7 +31,7 @@
 						<configuration>
 							<classifier>mule-application</classifier>
 							<cloudHubDeployment>
-								<applicationName>nife-mule-common</applicationName>
+								<applicationName>dev-nife-mule-common</applicationName>
 								<environment>Dev</environment>
 								<region>us-east-1</region>
 								<workers>1</workers>
@@ -67,7 +67,7 @@
 						<configuration>
 							<classifier>mule-application</classifier>
 							<cloudHubDeployment>
-								<applicationName>nife-mule-common</applicationName>
+								<applicationName>test-nife-mule-common</applicationName>
 								<environment>Test</environment>
 								<region>us-east-1</region>
 								<workers>1</workers>
