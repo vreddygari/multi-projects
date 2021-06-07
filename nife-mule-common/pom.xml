@@ -39,7 +39,7 @@
 								<objectStoreV2>true</objectStoreV2>
 								<properties>
 									<env>dev</env>
-									<mule.key>45689</mule.key>
+									<mule.key>456890</mule.key>
 									<amq.destination.error>Invalid</amq.destination.error>
 									<amq.clientid>789654</amq.clientid>
 									<amq.clientsecret>654987</amq.clientsecret>
